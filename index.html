@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="./big-num.js"></script>
+    <script src="./script.js"></script>
+  </head>
+  <body>
+    <form id="count-form">
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col-12 col-md-5">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Test</h5>
+                <div class="form-row">
+                  <div class="col-12 col-md-6">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="first"
+                      placeholder="First value"
+                      required
+                    />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="second"
+                      placeholder="Second value"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <div class="form-row">
+                  <div class="col-12">
+                    <select id="action" class="form-control" required>
+                      <option selected disabled value="0">Choose</option>
+                    </select>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-primary">Do it</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-5">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Check</h5>
+                <div class="row">
+                  <div class="col-12">
+                    <span>Expected result: </span>
+                    <span id="expected"></span>
+                  </div>
+                  <div class="col-12">
+                    <span>Actual result: </span>
+                    <span id="actual"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
