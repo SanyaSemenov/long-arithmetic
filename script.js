@@ -1,11 +1,15 @@
-var actions = ['sum', 'subtract', 'multiply'];
-var actionsSelect, form, expected, actual;
+var actions = ['plus', 'minus', 'multiply'];
+var actionsSelect, form, expected, actual, check, error;
 const ACCEPTED_CLASS = 'text-success';
 const WRONG_CLASS = 'text-danger';
-const EXPECTED_ACTIONS = new Map([
-  ['sum', (a,b) => a + b],
-  ['subtract', (a,b) => a - b],
+const HIDDEN_ATTRIBUTE = 'hidden';
+const ACTIONS = new Map([
+  ['plus', (a,b) => a + b],
+  ['minus', (a,b) => a - b],
   ['multiply', (a,b) => a * b],
+  ['isBigger', (a,b) => a > b],
+  ['isLess', (a,b) => a < b],
+  ['isEqual', (a,b) => a === b]
 ]);
 const FIELDS = ['first', 'second', 'action'];
 
@@ -14,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   form = document.getElementById('count-form');
   expected = document.getElementById('expected');
   actual = document.getElementById('actual');
-  actions.forEach(a => createOption(a));
+  check = document.getElementById('check');
+  error = document.getElementById('error');
+  Array.from(ACTIONS.keys()).forEach(a => createOption(a));
   form.onsubmit = handleForm;
 });
 
@@ -34,23 +40,33 @@ function handleForm(e) {
 function runAction(first, second, action) {
   const f = BigInt(first);
   const s = BigInt(second);
-  const expectedResult = EXPECTED_ACTIONS.get(action)(f, s);
-  expected.innerText = expectedResult.toString().replace('n', '');
+  const expectedResult = ACTIONS.get(action)(f, s).toString().replace('n', '');
+  expected.innerText = expectedResult;
   const actualResult = new BigNum(first)[action](new BigNum(second)).toString();
   actual.innerText = actualResult;
-  const isMatch = expectedResult === BigInt(actualResult);
+  const isMatch = expectedResult === actualResult;
   clearResults();
-  if (isMatch) {
-    expected.classList.add(ACCEPTED_CLASS);
-    actual.classList.add(ACCEPTED_CLASS);
-  } else {
-    expected.classList = '';
-    actual.classList.add(WRONG_CLASS);
-  }
+  isMatch ? successResult() : errorResult();
+}
+
+function successResult() {
+  expected.classList.add(ACCEPTED_CLASS);
+  actual.classList.add(ACCEPTED_CLASS);
+  check.removeAttribute(HIDDEN_ATTRIBUTE);
+  error.setAttribute(HIDDEN_ATTRIBUTE, true);
+}
+
+function errorResult() {
+  expected.classList = '';
+  actual.classList.add(WRONG_CLASS);
+  check.setAttribute(HIDDEN_ATTRIBUTE, true);
+  error.removeAttribute(HIDDEN_ATTRIBUTE);
 }
 
 function clearResults() {
   expected.classList = '';
   actual.classList = '';
+  check.setAttribute(HIDDEN_ATTRIBUTE, true);
+  error.setAttribute(HIDDEN_ATTRIBUTE, true);
 }
 

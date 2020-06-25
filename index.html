@@ -10,6 +10,7 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css" />
     <script src="./big-num.js"></script>
     <script src="./script.js"></script>
   </head>
@@ -74,6 +75,14 @@
                     <span>Actual result: </span>
                     <span id="actual"></span>
                   </div>
+                </div>
+                <div id="check" class="text-center text-success mt-3" hidden>
+                  <i class="fa fa-check-square"></i>
+                  <span>Check</span>
+                </div>
+                <div id="error" class="text-center text-danger mt-3" hidden>
+                  <i class="fa fa-ban"></i>
+                  <span>Error</span>
                 </div>
               </div>
             </div>

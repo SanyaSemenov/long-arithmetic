@@ -1,13 +1,14 @@
 class BigNum {
-  constructor(num) {
-    this.num = num.toString().split("");
+  constructor(num, negative = false) {
+    this.num = num.toString().replace(/^-*0*/, '').split("");
+    this.negative = negative || num[0] === '-';
   }
 
   get length() {
     return this.num.length;
   }
 
-  sum(num) {
+  plus(num) {
     if (!this.num.length || !num.length) {
       return this.num.length ? this : new BigNum(num);
     }
@@ -28,14 +29,15 @@ class BigNum {
     return new BigNum(result.reverse().join(""));
   }
 
-  subtract(num) {
+  minus(num) {
     if (!this.num.length || !num.length) {
       return this.num.length ? this : new BigNum(num);
     }
-    const A = [...this.num];
+    const isLess = this.isLess(new BigNum(num));
+    let A = [...(isLess ? num.num : this.num)];
     const B = [
       ..."0".repeat(Math.abs(this.num.length - num.length)).split(""),
-      ...num.num,
+      ...(isLess ? this.num : num.num),
     ];
     const result = [];
     for (let i = A.length - 1; i >= 0; i--) {
@@ -54,13 +56,14 @@ class BigNum {
       const res = first - second;
       result.push(res % 10);
     }
-    return new BigNum(result.reverse().join(""));
+    return new BigNum('-'.repeat(isLess) + result.reverse().join(""));
   }
 
   multiply(num) {
     if (!this.num.length || !num.length) {
-      return this.num.length ? this : new BigNum(num);
+      return this.num.length ? this : num;
     }
+    const isNegative = (this.negative && !num.negative) || (!this.negative && num.negative);
     const isThisBigger = this.num.length > num.length;
     const A = (isThisBigger ? this : num).num;
     const B = (isThisBigger ? num : this).num;
@@ -80,16 +83,139 @@ class BigNum {
       if (add > 0) results[i].push(add);
     }
     for (let k = 0; k < results.length; k++) {
-      result = result.sum(
+      result = result.plus(
         new BigNum(
           results[k].reverse().join("") + "0".repeat(results.length - k - 1)
         )
       );
     }
+    result.negative = isNegative;
     return result;
   }
 
+  _wholeDivide(num) {
+    if(num === '0') return Infinity;
+
+
+  }
+
+  divide(num) {
+    let A = this.num.join('');
+    let B = num.num.join('');
+    if (A.length === B.length) {
+
+    }
+    let result = ['', ''];
+    let current = new BigNum(A.substring(0, B.length));
+    if (current.isLess(num)) {
+      if (A.length === B.length) {
+        return [new BigNum(result[0]), new BigNum(A)];
+      }
+      current = A.substring(0, B.length);
+    }
+
+    const columnDiv = () => {
+      const findDiv = () => {
+        const d = current.length > B.length ? current.num[0] + current.num[1] : current.num[0];
+        const approx = Math.floor(+d / +B[0]);
+        const near = new BigNum(B).multiply(new BigNum(approx));
+        let div = current.isLess(near) ? approx - 1 : approx;
+        // TODO: might be a problem
+        // if (current.isEqual(near)) {
+        //   div = approx;
+        // } else (current.isLess(near)) {
+        //   div = approx - 1;
+        // }
+        const rem = current.minus(
+          div < approx ?
+          new BigNum(current).minus(new BigNum(B).multiply(new BigNum(div))) :
+          new BigNum(current).minus(near)
+        );
+
+      };
+    };
+  }
+
+  /**
+   * true if bigger, false if less
+   * @param {BigNum} num 
+   */
+  isBigger(num) {
+    let A = [...this.num];
+    let B = [...num.num];
+    if (A.length < B.length) {
+      return false;
+    } else if (A.length > B.length) {
+      return true;
+    }
+
+    let counter = 1;
+    while (A[counter - 1] > B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return true;
+    }
+    while (A[counter - 1] < B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return false;
+    }
+    while (A[counter - 1] === B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return A[counter - 1] > B[counter - 1];
+    }
+    return false;
+  }
+
+  /**
+   * true if less, false if bigger
+   * @param {BigNum} num 
+   */
+  isLess(num) {
+    let A = [...this.num];
+    let B = [...num.num];
+    if (A.length > B.length) {
+      return false;
+    } else if (A.length < B.length) {
+      return true;
+    }
+
+    let counter = 1;
+    while (A[counter - 1] < B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return true;
+    }
+    while (A[counter - 1] > B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return false;
+    }
+    while (A[counter - 1] === B[counter - 1] && counter < A.length + 1) {
+      counter++;
+    }
+    if (counter > 1) {
+      return A[counter - 1] < B[counter - 1];
+    }
+    return false;
+  }
+
+  isEqual(num) {
+    let A = [...this.num];
+    let B = [...num.num];
+    if (A.length !== B.length) {
+      return false;
+    }
+    return A.join('') === B.join('');
+  }
+
   toString() {
-    return this.num.join("");
+    return '-'.repeat(this.negative) + this.num.join("");
   }
 }
