@@ -105,35 +105,33 @@ class BigNum {
     if (A.length === B.length) {
 
     }
-    let result = ['', ''];
-    let current = new BigNum(A.substring(0, B.length));
+    let result = ['', ''], rem = '', subStart = 0, subEnd = B.length;
+    let current = new BigNum(rem + A.substring(subStart, subEnd));
+
     if (current.isLess(num)) {
-      if (A.length === B.length) {
-        return [new BigNum(result[0]), new BigNum(A)];
-      }
-      current = A.substring(0, B.length);
+      return [new BigNum('0'), this.num];
     }
+    subStart = subEnd - 1;
 
     const columnDiv = () => {
-      const findDiv = () => {
-        const d = current.length > B.length ? current.num[0] + current.num[1] : current.num[0];
-        const approx = Math.floor(+d / +B[0]);
-        const near = new BigNum(B).multiply(new BigNum(approx));
-        let div = current.isLess(near) ? approx - 1 : approx;
-        // TODO: might be a problem
-        // if (current.isEqual(near)) {
-        //   div = approx;
-        // } else (current.isLess(near)) {
-        //   div = approx - 1;
-        // }
-        const rem = current.minus(
-          div < approx ?
-          new BigNum(current).minus(new BigNum(B).multiply(new BigNum(div))) :
-          new BigNum(current).minus(near)
-        );
-
-      };
+      const d = current.length > B.length ? current.num[0] + current.num[1] : current.num[0];
+      const approx = Math.floor(+d / +B[0]);
+      const near = new BigNum(B).multiply(new BigNum(approx));
+      let div = current.isLess(near) ? approx - 1 : approx;
+      // TODO: might be a problem
+      // if (current.isEqual(near)) {
+      //   div = approx;
+      // } else (current.isLess(near)) {
+      //   div = approx - 1;
+      // }
+      const rem = current.minus(
+        div < approx ?
+        new BigNum(current).minus(new BigNum(B).multiply(new BigNum(div))) :
+        new BigNum(current).minus(near)
+      ).toString();
+      current = new BigNum(rem + A.substring(++subStart, ++subEnd));
     };
+    columnDiv();
   }
 
   /**
